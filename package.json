@@ -1,0 +1,24 @@
+{
+  "name": "@unb-libraries/einbaum",
+  "version": "0.0.1",
+  "description": "A Cypress.io wrapper for reusability of customizations.",
+  "main": "./index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cypress": "^12.0.1"
+  },
+  "keywords": [
+    "cypress",
+    "e2e",
+    "testing",
+    "node"
+  ],
+  "author": {
+    "name": "Patrick Schilf",
+    "email": "pschilf@unb.ca"
+  },
+  "license": "MIT"
+}
