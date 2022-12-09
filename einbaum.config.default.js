@@ -7,6 +7,7 @@ module.exports = {
     setupNodeEvents: (on, config) => {
 
     },
+    baseUrl: "http://localhost:8080",
     fixturesFolder: path.resolve(__dirname, './fixtures'),
     specPattern: path.resolve(PROJECT_ROOT, 'e2e/**/*.cy.js'),
     supportFile: path.resolve(__dirname, './support/index.js'),
