@@ -3,6 +3,8 @@ const { open: cypress } = require("cypress")
 const path = require('path')
 const fs = require('fs')
 
+process.env.PROJECT_ROOT = process.cwd()
+
 const config = {
   configFile: path.resolve(__dirname, './einbaum.config.default.js')
 }
