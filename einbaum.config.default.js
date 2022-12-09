@@ -1,11 +1,15 @@
 const { defineConfig } = require('cypress')
 const path = require('path')
+const fs = require('fs')
 
 const { PROJECT_ROOT } = process.env
 module.exports = {
   e2e: {
     setupNodeEvents: (on, config) => {
-
+      config.includes = {
+        commands: fs.readdirSync(path.resolve(PROJECT_ROOT, 'commands'))
+      }
+      return config
     },
     baseUrl: "http://localhost:8080",
     fixturesFolder: path.resolve(__dirname, './fixtures'),
