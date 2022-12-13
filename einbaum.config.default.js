@@ -2,10 +2,11 @@ const { defineConfig } = require('cypress')
 const path = require('path')
 const fs = require('fs')
 
-const { PROJECT_ROOT } = process.env
+const { PROJECT_ROOT, PROJECT_KEY } = process.env
 module.exports = {
   e2e: {
     setupNodeEvents: (on, config) => {
+      config.projectKey = PROJECT_KEY
       config.includes = {
         commands: fs.readdirSync(path.resolve(PROJECT_ROOT, 'commands'))
       }
