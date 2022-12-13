@@ -9,10 +9,6 @@ process.env.PROJECT_ROOT = projectRoot
 const projectKey = projectRoot.replace(/[^a-zA-z0-9-_]/g, "")
 process.env.PROJECT_KEY = projectKey
 
-const config = {
-  configFile: path.resolve(__dirname, './einbaum.config.default.js')
-}
-
 const tmpProjectRoot = `/tmp/.einbaum/${projectKey}`
 if (!fs.existsSync(tmpProjectRoot)) {
   fs.mkdirSync(tmpProjectRoot, {recursive: true})
@@ -26,9 +22,6 @@ if (!fs.existsSync(tmpProjectRoot)) {
   }
 })
 
-const customConfigFile = path.resolve(projectRoot, 'einbaum.config.js')
-if (fs.existsSync(customConfigFile)) {
-  config.configFile = customConfigFile
-}
-
-cypress(config)
+cypress({
+  configFile: path.resolve(__dirname, './cypress.config.js')
+})

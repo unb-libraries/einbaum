@@ -1,7 +1,6 @@
-const { defineConfig: defineCypressConfig } = require('cypress')
+const defaultConfig = require('./einbaum.config.default')
 const merge = require('lodash.merge')
 
-const defaultConfig = require('./einbaum.config.default')
 module.exports = {
-  defineEinbaumConfig: (config) => defineCypressConfig(merge(defaultConfig, config)),
+  defineConfig: (config) => merge(defaultConfig, config),
 }
