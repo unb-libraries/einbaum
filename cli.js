@@ -13,14 +13,18 @@ const config = {
   configFile: path.resolve(__dirname, './einbaum.config.default.js')
 }
 
-const tmp = `/tmp/.einbaum/${projectKey}`
-if (!fs.existsSync(tmp)) {
-  fs.mkdirSync(tmp, {recursive: true})
+const tmpProjectRoot = `/tmp/.einbaum/${projectKey}`
+if (!fs.existsSync(tmpProjectRoot)) {
+  fs.mkdirSync(tmpProjectRoot, {recursive: true})
 }
 
-if (!fs.existsSync(path.resolve(tmp, 'commands'))) {
-    fs.symlinkSync(path.resolve(projectRoot, 'commands'), path.resolve(tmp, 'commands'))
-}
+['commands', 'preprocessors', 'selectors', 'workflows'].forEach(plugin => {
+  const pluginPath = path.resolve(projectRoot, plugin)
+  const tmpPluginPath = path.resolve(tmpProjectRoot, plugin)
+  if (fs.existsSync(pluginPath) && !fs.existsSync(tmpPluginPath)) {
+    fs.symlinkSync(pluginPath, tmpPluginPath)
+  }
+})
 
 const customConfigFile = path.resolve(projectRoot, 'einbaum.config.js')
 if (fs.existsSync(customConfigFile)) {
