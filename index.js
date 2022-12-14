@@ -25,7 +25,9 @@ const symlinkPluginFiles = (plugins, targetRoot) => {
   plugins.forEach(plugin => {
     const pluginRoot = path.dirname(resolvePluginPath(plugin))
     PLUGIN_TYPES.forEach(type => {
-      symlinks[type] = []
+      if (!symlinks[type]) {
+        symlinks[type] = []
+      }
       const pluginTypeRoot = path.resolve(pluginRoot, type)
       if (fs.existsSync(pluginTypeRoot)) {
         const targetTypeRoot = path.resolve(targetRoot, type)
