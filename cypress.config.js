@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 
 const { defineConfig: defineCypressConfig } = require('cypress')
-const { defineConfig: defineEinbaumConfig } = require('./')
+const { defineConfig: defineEinbaumConfig, symlinkPluginFiles } = require('./')
 
 const { PROJECT_ROOT, PROJECT_KEY } = process.env
 
@@ -12,13 +12,18 @@ if (fs.existsSync(projectConfigPath)) {
   einbaumConfig = defineEinbaumConfig(require(projectConfigPath))
 }
 
+const tmpRoot = '/tmp/.einbaum/'
+const tmpProjectRoot = tmpRoot + PROJECT_KEY
+if (!fs.existsSync(tmpProjectRoot)) {
+  fs.mkdirSync(tmpProjectRoot, {recursive: true})
+}
+
 module.exports = defineCypressConfig({
   e2e: {
     setupNodeEvents: (on, config) => {
       config.projectKey = PROJECT_KEY
-      config.includes = {
-        commands: fs.readdirSync(path.resolve(PROJECT_ROOT, 'commands'))
-      }
+      config.includes = symlinkPluginFiles(Object.keys(einbaumConfig.plugins), tmpProjectRoot)
+      console.log(config.includes)
       return config
     },
     baseUrl: einbaumConfig.baseUrl,
