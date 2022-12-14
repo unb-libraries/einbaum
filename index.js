@@ -11,10 +11,19 @@ const PLUGIN_TYPES = [
   'workflows',
 ]
 
+const resolvePluginPath = (plugin) => {
+  const { PROJECT_ROOT } = process.env
+  const projectNodeModulesPath = `${PROJECT_ROOT}/node_modules`
+  if (!module.paths.includes(projectNodeModulesPath)) {
+    module.paths.push(projectNodeModulesPath)
+  }
+  return require.resolve(plugin)
+}
+
 const symlinkPluginFiles = (plugins, targetRoot) => {
   const symlinks = {}
   plugins.forEach(plugin => {
-    const pluginRoot = path.dirname(require.resolve(plugin))
+    const pluginRoot = path.dirname(resolvePluginPath(plugin))
     PLUGIN_TYPES.forEach(type => {
       symlinks[type] = []
       const pluginTypeRoot = path.resolve(pluginRoot, type)
