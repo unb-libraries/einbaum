@@ -50,7 +50,23 @@ const registerCommands = (commands) => {
   })
 }
 
-const registerSelectors = (modules) => {
+const registerSelectors = (selectors) => {
+  Cypress.Commands.addQuery('getBySelector', (selector) => {
+    if (!selector.match(/^[a-zA-Z-_]+(\:([0-9a-zA-Z-_])+)+$/)) {
+      throw new Error("Malformed selector")
+    }
+
+    const base = selector.substring(0, selector.lastIndexOf(':'))
+    const name = selector.substring(selector.lastIndexOf(':') + 1)
+    if (!selectors.hasOwnProperty(base)) {
+      throw new Error("Unrecognized selector")
+    }
+
+    const getFn = cy.now('get', selectors[base](name))
+    return (selector) => {
+      return getFn(selector)
+    }
+  })
 }
 
 module.exports = {
