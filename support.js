@@ -22,9 +22,9 @@ const writeSupportFile = (filename, plugins) => {
       ? glob.sync(`${PROJECT_ROOT}/node_modules/${plugins.length > 1 ? `{${plugins.join(',')}}` : plugins[0]}/lib/${type}/**/*.js`)
       : []
 
-    content += `${registerFn}([
-      ${[...localPaths, ...pluginPaths].map(path => `require('${path}')`).join(",\n\t")}
-    ])\n\n`
+    content += `${registerFn}({
+      ${[...localPaths, ...pluginPaths].map(path => `...require('${path}')`).join(",\n\t")}
+    })\n\n`
   })
 
   const supportDir = path.dirname(filename)
@@ -34,7 +34,20 @@ const writeSupportFile = (filename, plugins) => {
   fs.writeFileSync(filename, content)
 }
 
-const registerCommands = (modules) => {
+const registerCommands = (commands) => {
+  Object.entries(commands)
+  .forEach(([name, { fn, method = 'add', type = 'parent', subject = false }]) => {
+    if (method === 'add') {
+      Cypress.Commands.add(name, {
+        prevSubject: type === 'parent'
+          ? false
+          : subject,
+      }, fn)
+    }
+    else {
+      Cypress.Commands.overwrite(name, fn)
+    }
+  })
 }
 
 const registerSelectors = (modules) => {
