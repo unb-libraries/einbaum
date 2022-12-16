@@ -28,7 +28,7 @@ module.exports = defineCypressConfig({
       return config
     },
     baseUrl: einbaumConfig.baseUrl,
-    fixturesFolder: path.resolve(__dirname, './fixtures'),
+    fixturesFolder: einbaumConfig.fixturesFolder || path.resolve(__dirname, './fixtures'),
     specPattern: path.resolve(PROJECT_ROOT, 'e2e/**/*.cy.js'),
     supportFile: supportFilename,
   }
