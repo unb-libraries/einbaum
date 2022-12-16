@@ -13,7 +13,7 @@ const generateSupportFilename = (dir = '/tmp/.einbaum') => {
 const writeSupportFile = (filename, plugins) => {
   let content = ""
 
-  const pluginTypes = {commands: 'registerCommands', selectors: 'registerSelectors'}
+  const pluginTypes = {commands: 'registerCommands', selectors: 'registerSelectors', workflows: 'registerWorkflows'}
   content += `const { ${Object.values(pluginTypes).map(registerFn => registerFn).join(', ')} } = require('${__filename}')\n`
 
   Object.entries(pluginTypes).forEach(([type, registerFn]) => {
@@ -69,9 +69,27 @@ const registerSelectors = (selectors) => {
   })
 }
 
+const registerWorkflows = (workflows) => {
+  function Workflows() {
+    this.workflows = {}
+  }
+  
+  Workflows.prototype.add = function (id, workflowFn) {
+    this.workflows[id] = workflowFn
+  }
+  
+  Workflows.prototype.run = function (id, context) {
+    return this.workflows[id](context)
+  }
+  
+  Cypress.$Cypress.prototype.Workflows = new Workflows()
+  Object.entries(workflows).forEach(([id, workflowFn]) => Cypress.Workflows.add(id, workflowFn))
+}
+
 module.exports = {
   registerCommands,
   registerSelectors,
+  registerWorkflows,
   writeSupportFile,
   generateSupportFilename,
 }
