@@ -21,10 +21,10 @@ writeSupportFile(supportFilename, pluginIds)
 module.exports = defineCypressConfig({
   e2e: {
     setupNodeEvents: (on, config) => {
-      const preprocessors = loadPreprocessors(pluginIds, {projectRoot: PROJECT_ROOT})
-      if (Object.values(preprocessors).length > 0) {
-        on('file:preprocessor', registerPreprocessors(preprocessors))
-      }
+      // const preprocessors = loadPreprocessors(pluginIds, {projectRoot: PROJECT_ROOT})
+      // if (Object.values(preprocessors).length > 0) {
+      //   on('file:preprocessor', registerPreprocessors(preprocessors))
+      // }
       return config
     },
     baseUrl: einbaumConfig.baseUrl,
