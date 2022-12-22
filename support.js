@@ -10,20 +10,50 @@ const generateSupportFilename = (dir = '/tmp/.einbaum') => {
   return path.resolve(dir, `support.${hash}.js`)
 }
 
+const subpaths = (root) => {
+  const paths = []
+  while (root.length > 0) {
+    paths.push(root)
+    root = root.split('/').slice(0,-1).join('/')
+  }
+  return paths
+}
+
+const addModulePaths = (paths) => {
+  paths = paths.filter(path => !module.paths.includes(path))
+  module.paths.push(...paths)
+}
+
+const resolvePluginPath = (plugin) => {
+  return path.dirname(require.resolve(plugin))
+}
+
+const resolvePluginModulePaths = (plugin, type) => {
+  return glob.sync(`${resolvePluginPath(plugin)}/**/${type}/**/*.js`)
+}
+
+const resolveProjectPaths = (projectRoot, pluginType) => {
+  return glob.sync(`${projectRoot}/${pluginType}/**/*.js`)  
+}
+
+const resolveAllPaths = (plugins, type) => {
+  const localPaths = resolveProjectPaths(PROJECT_ROOT)
+  return plugins
+  .map(plugin => resolvePluginModulePaths(plugin, type))
+  .reduce((paths, pluginPaths) => [...paths, ...pluginPaths], localPaths)
+}
+
 const writeSupportFile = (filename, plugins) => {
   let content = ""
 
+  addModulePaths(subpaths(PROJECT_ROOT).map(path => `${path}/node_modules`))
   const pluginTypes = {commands: 'registerCommands', selectors: 'registerSelectors', workflows: 'registerWorkflows'}
   content += `const { ${Object.values(pluginTypes).map(registerFn => registerFn).join(', ')} } = require('${__filename}')\n`
 
   Object.entries(pluginTypes).forEach(([type, registerFn]) => {
-    const localPaths = glob.sync(`${PROJECT_ROOT}/${type}/**/*.js`)
-    const pluginPaths = plugins.length > 0
-      ? glob.sync(`${PROJECT_ROOT}/node_modules/${plugins.length > 1 ? `{${plugins.join(',')}}` : plugins[0]}/lib/${type}/**/*.js`)
-      : []
-
+    const paths = resolveAllPaths(plugins, type)
     content += `${registerFn}({
-      ${[...localPaths, ...pluginPaths].map(path => `...require('${path}')`).join(",\n\t")}
+      ${paths.map(path => `...require('${path}')`).join(",\n\t")}
     })\n\n`
   })
 
