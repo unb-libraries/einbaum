@@ -11,7 +11,8 @@
   "dependencies": {
     "cypress": "^12.0.1",
     "glob": "^8.0.3",
-    "lodash.merge": "^4.6.2"
+    "lodash.merge": "^4.6.2",
+    "lodash.snakecase": "^4.1.1"
   },
   "keywords": [
     "cypress",
