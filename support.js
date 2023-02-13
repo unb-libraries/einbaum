@@ -37,7 +37,7 @@ const resolveProjectPaths = (projectRoot, pluginType) => {
 }
 
 const resolveAllPaths = (plugins, type) => {
-  const localPaths = resolveProjectPaths(PROJECT_ROOT)
+  const localPaths = resolveProjectPaths(PROJECT_ROOT, type)
   return plugins
   .map(plugin => resolvePluginModulePaths(plugin, type))
   .reduce((paths, pluginPaths) => [...paths, ...pluginPaths], localPaths)
