@@ -47,7 +47,7 @@ const writeSupportFile = (filename, plugins) => {
   let content = ""
 
   addModulePaths(subpaths(PROJECT_ROOT).map(path => `${path}/node_modules`))
-  const pluginTypes = {commands: 'registerCommands', selectors: 'registerSelectors', workflows: 'registerWorkflows'}
+  const pluginTypes = {commands: 'registerCommands', hooks: 'registerHooks', selectors: 'registerSelectors', workflows: 'registerWorkflows'}
   content += `const { ${Object.values(pluginTypes).map(registerFn => registerFn).join(', ')} } = require('${__filename}')\n`
 
   Object.entries(pluginTypes).forEach(([type, registerFn]) => {
@@ -76,6 +76,17 @@ const registerCommands = (commands) => {
     }
     else {
       Cypress.Commands.overwrite(name, fn)
+    }
+  })
+}
+
+const registerHooks = (allHooks) => {
+  [before, after, beforeEach, afterEach].forEach(hookType => {
+    const hooks = Object.values(allHooks).filter(hook => hook.type === hookType.name)
+    if (hooks) {
+      hookType(() => {
+        hooks.forEach(hook => hook.fn())
+      })
     }
   })
 }
@@ -118,6 +129,7 @@ const registerWorkflows = (workflows) => {
 
 module.exports = {
   registerCommands,
+  registerHooks,
   registerSelectors,
   registerWorkflows,
   writeSupportFile,
