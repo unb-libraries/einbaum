@@ -7,7 +7,7 @@ const defineConfig = (config) => {
   Object.keys(config.cypress.e2e).forEach(key => {
     const snakeKey = snakeCase(key).toUpperCase()
     if (process.env[snakeKey]) {
-      config[key] = process.env[snakeKey]
+      config.cypress.e2e[key] = process.env[snakeKey]
     }
   })
   return config
