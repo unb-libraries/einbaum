@@ -4,7 +4,7 @@ const snakeCase = require('lodash.snakecase')
 
 const defineConfig = (config) => {
   config = merge(defaultConfig, config)
-  Object.keys(config).forEach(key => {
+  Object.keys(config.cypress.e2e).forEach(key => {
     const snakeKey = snakeCase(key).toUpperCase()
     if (process.env[snakeKey]) {
       config[key] = process.env[snakeKey]
