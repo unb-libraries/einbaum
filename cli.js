@@ -32,9 +32,11 @@ config = {
   configFile: path.resolve(__dirname, './cypress.config.js'),
 }
 
-if (!headless) {
-  open(config)
-}
-else {
-  run(config)
-}
+const exec = headless ? run : open
+exec(config)
+  .then(({ totalFailed}) => {
+    process.exit(totalFailed > 0 ? 1 : 0)
+  })
+  .catch((e) => {
+    process.exit(e.code || 1)
+  })
